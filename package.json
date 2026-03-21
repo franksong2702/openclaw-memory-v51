@@ -1,0 +1,23 @@
+{
+  "name": "memory-v51",
+  "version": "1.0.0",
+  "description": "Simple memory system for OpenClaw",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "openclaw",
+    "memory",
+    "plugin"
+  ],
+  "author": "Frank",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^25.5.0",
+    "@types/sqlite3": "^3.1.11",
+    "sqlite3": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}

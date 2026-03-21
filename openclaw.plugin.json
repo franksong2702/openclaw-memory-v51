@@ -1,0 +1,21 @@
+{
+  "id": "memory-v51",
+  "uiHints": {
+    "dbPath": {
+      "label": "Database Path",
+      "help": "Path to SQLite database (default: ~/.openclaw/extensions/memory-v51/memory.db)"
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean"
+      },
+      "dbPath": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.db
+*.sqlite
+
+# Build output (keep source, exclude build artifacts)
+*.js.map
+*.d.ts
+*.d.ts.map
+
+# Test and benchmark reports
+benchmark_reports/
+benchmark_reports_v*/
+test_*.py
+benchmark*.py
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+*_backup.py
+
+# Temporary files
+tmp/
+temp/
+*.tmp
