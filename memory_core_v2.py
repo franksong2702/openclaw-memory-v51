@@ -15,7 +15,13 @@ from datetime import datetime
 from pathlib import Path
 
 # ========== 配置 ==========
-MEMORY_DIR = Path.home() / ".openclaw" / "extensions" / "memory_v51"
+# 动态获取插件目录（修复：兼容 memory-v51 和 memory_v51 两种目录名）
+_PLUGIN_DIR = Path(__file__).parent
+# 优先使用插件目录下的 memory_v51 子目录（向后兼容）
+MEMORY_DIR = _PLUGIN_DIR / "memory_v51"
+if not MEMORY_DIR.exists():
+    # 如果 memory_v51 不存在，使用插件根目录
+    MEMORY_DIR = _PLUGIN_DIR
 MEMORY_DIR.mkdir(parents=True, exist_ok=True)
 DB_PATH = MEMORY_DIR / "memory.db"
 
@@ -222,6 +228,10 @@ def remember(content, category='general', priority=5):
 
 def recall(query, limit=5):
     """检索相关记忆（V52.1 优化版）"""
+    # 修复：空查询返回空列表
+    if not query or not query.strip():
+        return []
+    
     conn = sqlite3.connect(str(DB_PATH))
     c = conn.cursor()
     
@@ -233,10 +243,14 @@ def recall(query, limit=5):
     params = []
     
     for q in expanded_queries:
-        conditions.append('content LIKE ?')
-        params.append(f'%{q}%')
-        conditions.append('keywords LIKE ?')
-        params.append(f'%{q}%')
+        # 修复：对 LIKE 特殊字符（% _）进行转义，防止 SQL 注入
+        escaped_q = q.replace('%', r'\%').replace('_', r'\_')
+        conditions.append('content LIKE ? ESCAPE ?')
+        params.append(f'%{escaped_q}%')
+        params.append('\\')
+        conditions.append('keywords LIKE ? ESCAPE ?')
+        params.append(f'%{escaped_q}%')
+        params.append('\\')
     
     sql = f'''
         SELECT id, summary, category, priority, keywords, access_count
@@ -295,6 +309,48 @@ def get_memory(memory_id):
             'access_count': row[7]
         }
     return None
+
+def update_memory(memory_id, content=None, category=None, priority=None):
+    """更新记忆（V52.1 新增）"""
+    conn = sqlite3.connect(str(DB_PATH))
+    c = conn.cursor()
+    
+    updates = []
+    params = []
+    now = datetime.now().isoformat()
+    
+    if content is not None:
+        updates.append('content = ?')
+        params.append(content)
+        updates.append('summary = ?')
+        params.append(content[:50] + '...' if len(content) > 50 else content)
+        # 重新提取关键词
+        keywords = extract_keywords(content)
+        updates.append('keywords = ?')
+        params.append(json.dumps(keywords, ensure_ascii=False))
+    
+    if category is not None:
+        updates.append('category = ?')
+        params.append(category)
+    
+    if priority is not None:
+        updates.append('priority = ?')
+        params.append(priority)
+    
+    if not updates:
+        conn.close()
+        return False
+    
+    updates.append('updated_at = ?')
+    params.append(now)
+    params.append(memory_id)
+    
+    sql = f'UPDATE memories SET {", ".join(updates)} WHERE id = ?'
+    c.execute(sql, params)
+    conn.commit()
+    count = c.rowcount
+    conn.close()
+    return count > 0
 
 # ========== 工具函数 ==========
 def list_memories(category=None, limit=20):
