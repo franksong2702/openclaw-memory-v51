@@ -27,34 +27,67 @@
 ### 方法 1: 自动安装脚本（推荐）
 
 ```bash
-# Windows PowerShell
-cd C:\Users\user\.openclaw\extensions
+# 所有平台
+cd <your-openclaw-extensions-directory>
 git clone https://github.com/YOUR_USERNAME/openclaw-memory-v51.git memory-v51
 cd memory-v51
-npm install
-npm run build
+```
+
+然后运行对应系统的安装脚本：
+
+**Windows (PowerShell):**
+```powershell
+.\install.bat
+```
+
+**macOS / Linux:**
+```bash
+chmod +x install.sh
+./install.sh
 ```
 
 ### 方法 2: 手动安装
 
-1. 下载本仓库到 `C:\Users\user\.openclaw\extensions\memory-v51`
-2. 安装依赖：`npm install`
-3. 编译 TypeScript: `npm run build`
-4. 在 OpenClaw 配置中启用插件
+```bash
+# 1. 克隆或下载仓库到 OpenClaw extensions 目录
+# Windows: C:\Users\<user>\.openclaw\extensions\memory-v51
+# macOS/Linux: ~/.openclaw/extensions/memory-v51
+
+# 2. 安装依赖
+npm install
+
+# 3. 编译 TypeScript
+npm run build
+
+# 4. 初始化数据库（可选，首次运行时会自动创建）
+python memory_core_v2.py
+```
 
 ### 方法 3: 使用安装脚本
 
+**Windows:**
+```powershell
+cd C:\Users\user\.openclaw\extensions\memory-v51
+.\install.bat
+```
+
+**macOS/Linux:**
 ```bash
-# Windows
-cd C:\Users\user\.openclaw\extensions
-powershell -ExecutionPolicy Bypass -File install.bat
+cd ~/.openclaw/extensions/memory-v51
+chmod +x install.sh
+./install.sh
 ```
 
 ## 📝 配置
 
 ### 启用插件
 
-编辑 `C:\Users\user\.openclaw\openclaw.json`：
+**找到 OpenClaw 配置文件：**
+
+- **Windows:** `C:\Users\<user>\.openclaw\openclaw.json`
+- **macOS/Linux:** `~/.openclaw/openclaw.json`
+
+编辑配置文件：
 
 ```json
 {
@@ -71,9 +104,14 @@ powershell -ExecutionPolicy Bypass -File install.bat
 
 ### 重启 OpenClaw Gateway
 
+**所有平台:**
 ```bash
 openclaw gateway restart
 ```
+
+**或者手动重启:**
+- **Windows:** 关闭命令行窗口，重新运行 `openclaw gateway start`
+- **macOS/Linux:** `Ctrl+C` 停止，然后 `openclaw gateway start`
 
 ## 🛠️ 使用方法
 
@@ -239,6 +277,13 @@ MIT License
 ## 📞 支持
 
 遇到问题？请提交 Issue 或联系作者。
+
+---
+
+## 📚 更多文档
+
+- [跨平台安装指南](CROSS_PLATFORM.md) - Windows/macOS/Linux 详细说明
+- [GitHub 设置指南](GITHUB_SETUP.md) - 发布和分享说明
 
 ---
 

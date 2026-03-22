@@ -9,6 +9,11 @@ __pycache__/
 *.db
 *.sqlite
 
+# Shell scripts (keep install scripts, exclude temp scripts)
+!install.sh
+!install.bat
+*.sh.tmp
+
 # Build output (keep source, exclude build artifacts)
 *.js.map
 *.d.ts
